@@ -1,66 +1,146 @@
 "use client";
 import axios from "axios";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function Page() {
-	const [products, setProducts] = useState([
-		{
-			categories: "Fashion",
-			title: "T-shirt",
-			description: "Hello",
-			stock: "2",
-			price: "200000",
-			brand_name: "MyBrand",
-			gender: "male",
-		},
-		{
-			categories: "Fashion",
-			title: "T-shirt",
-			description: "Hello",
-			stock: "2",
-			price: "200000",
-			brand_name: "MyBrand",
-			gender: "male",
-		},
-	]);
-	// useEffect(() => {
-	// 	const getProducts = async () => {
-	// 		const fetchedProducts = await axios.get(
-	// 			"http://localhost:4000/products"
-	// 		);
-	// 		console.log(fetchedProducts);
-	// 		setProducts(fetchedProducts.data[0]);
-	// 	};
-	// 	getProducts();
-	// }, []);
+	const [products, setProducts] = useState([]);
+
+	useEffect(() => {
+		const getProducts = async () => {
+			const fetchedProducts = await axios.get(
+				"http://localhost:4000/products"
+			);
+			console.log(fetchedProducts.data.data[0]);
+			setProducts(fetchedProducts.data.data);
+		};
+		getProducts();
+	}, []);
+
+	const deleteHandler = async (id: any) => {
+		const deletedProduct = await axios.delete(
+			"http://localhost:4000/products/" + id
+		);
+		console.log(id);
+		console.log(deletedProduct.data);
+	};
 
 	return (
-		<div className="p-20 space-y-10">
-			<h1 className="text-4xl font-bold">My Products</h1>
-			<div>
-				<div className="flex items-center justify-between gap-8 font-bold mb-4">
-					<h3>Categories</h3>
-					<h3>Title</h3>
-					<h3>Description</h3>
-					<h3>Stock</h3>
-					<h3>Price</h3>
-					<h3>Brand Name</h3>
-					<h3>Gender</h3>
-				</div>
-				{products?.map((product: any, index: number) => (
-					<div
-						key={index}
-						className="flex items-center justify-between gap-8"
-					>
-						<p>{product.categories}</p>
-						<p>{product.title}</p>
-						<p>{product.description}</p>
-						<p>{product.stock}</p>
-						<p>{product.price}</p>
-						<p>{product.brand_name}</p>
-						<p>{product.gender}</p>
-					</div>
-				))}
+		<div className="p-5 space-y-8">
+			<div className="flex items-center justify-between border-b border-slate-600 pb-6">
+				<h1 className="text-4xl font-bold">My Products</h1>
+				<button className="px-4 py-2 bg-slate-300 rounded-lg">
+					Add Products
+				</button>
+			</div>
+			<div className="overflow-x-auto">
+				<table className="min-w-full divide-y divide-gray-200">
+					<thead className="bg-gray-50">
+						<tr>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Categories
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Image
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Title
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Description
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Stock
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Price
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Brand Name
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								Gender
+							</th>
+							<th scope="col" className="relative px-6 py-3">
+								<span className="sr-only">Edit</span>
+							</th>
+							<th scope="col" className="relative px-6 py-3">
+								<span className="sr-only">Delete</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody className="bg-white divide-y divide-gray-200">
+						{products.map((product, index) => (
+							<tr key={index}>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.categories}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									<img
+										src={product.image}
+										alt="tshirt"
+										className="w-[100px] h-[120px]"
+									/>
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.title}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.description}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.stock}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.price}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.brand_name}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap">
+									{product.gender}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+									<button className="text-indigo-600 hover:text-indigo-900">
+										Edit
+									</button>
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+									<button
+										onClick={() => deleteHandler(product.id)}
+										className="text-red-600 hover:text-red-900"
+									>
+										Delete
+									</button>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	);
