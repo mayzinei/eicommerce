@@ -7,22 +7,21 @@ export default function Page() {
 	const [products, setProducts] = useState([]);
 
 	useEffect(() => {
-		const getProducts = async () => {
-			const fetchedProducts = await axios.get(
-				"http://localhost:4000/products"
-			);
-			console.log(fetchedProducts.data.data[0]);
-			setProducts(fetchedProducts.data.data);
-		};
 		getProducts();
 	}, []);
 
+	const getProducts = async () => {
+		const fetchedProducts = await axios.get("http://localhost:4000/products");
+		console.log(fetchedProducts.data.data[0]);
+		setProducts(fetchedProducts.data.data);
+	};
 	const deleteHandler = async (id: any) => {
 		const deletedProduct = await axios.delete(
 			"http://localhost:4000/products/" + id
 		);
 		console.log(id);
 		console.log(deletedProduct.data);
+		getProducts();
 	};
 
 	return (
