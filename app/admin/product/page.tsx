@@ -7,7 +7,7 @@ import UpdateProducts from "../components/product/modals/updateProduct";
 
 export default function Page() {
 	const [products, setProducts] = useState([]);
-	const [product, setProduct] = useState();
+	const [product, setProduct] = useState({});
 	const [showModal, setShowModal] = useState(false);
 	const [showUpdateModal, setShowUpdateModal] = useState(false);
 	const [error, setError] = useState(false);
@@ -34,7 +34,8 @@ export default function Page() {
 		);
 
 		console.log(fetchedSingleProduct.data);
-		// await setProduct(fetchedSingleProduct.data);
+		await setProduct(fetchedSingleProduct.data);
+		await setShowUpdateModal(!showUpdateModal);
 	};
 	const deleteProduct = async (id: any) => {
 		const deletedProduct = await axios.delete(
@@ -67,7 +68,7 @@ export default function Page() {
 	const updateProduct = async (e: any) => {
 		e.preventDefault();
 		const updatedProduct = await axios.put(
-			"http://localhost:4000/products/" + products.id,
+			"http://localhost:4000/products/" + product.id,
 			{
 				title: titleRef.current.value,
 				description: descriptionRef.current.value,
@@ -77,7 +78,8 @@ export default function Page() {
 				gender: genderRef.current.value,
 			}
 		);
-		console.log(updatedProduct.data.data);
+
+		console.log(updatedProduct.data);
 		getProducts();
 		setShowUpdateModal(!showUpdateModal);
 	};
@@ -219,6 +221,7 @@ export default function Page() {
 					priceRef={priceRef}
 					brandRef={brandRef}
 					genderRef={genderRef}
+					product={product}
 				/>
 			)}
 		</div>
